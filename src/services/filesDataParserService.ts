@@ -18,13 +18,4 @@ export class FilesDataParserService {
 
         return root;
     }
-
-    private parseSingleUrl(fileUrl: string) {
-        
-
-    }
-
-    private isDir(filePath: string) {
-        return filePath.endsWith('/');
-    }
 }

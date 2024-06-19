@@ -63,4 +63,19 @@ export class Directory {
             return added;
         }
     }
+
+    public formatToJson(){
+        const thisDir = {
+            [this.name] : [] as any[]
+        };
+        for (let i = 0; i < this.subdirs.length; i++) {
+            thisDir[this.name].push(this.subdirs[i].formatToJson())            
+        }
+
+        for (let i = 0; i < this.files.length; i++) {
+            thisDir[this.name].push(this.files[i]);            
+        }
+
+        return thisDir;
+    }
 }

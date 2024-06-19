@@ -16,7 +16,7 @@ export class FilesController {
         const apiRes = await this.externalApiService.getFiles();
         if (apiRes) {
             const dir = await this.filesDataParserService.parseFilesApiResponse(apiRes);
-            res.send(dir);
+            res.send(dir.formatToJson());
         } else {
             res.status(400);
             res.send('Failed to get data from API.');
