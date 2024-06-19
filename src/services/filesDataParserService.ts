@@ -5,17 +5,16 @@ import { DirContent, IDir, addToDir } from './../models/fileSystemResponse/respo
 export class FilesDataParserService {
 
     async parseFilesApiResponse(response: FilesApiResponse) {
-        const root = {} as IDir;
-        root[''] = [];
+        const root = new Directory('');
         for (let i = 0; i < response.files.length; i++) {
             const fileUrl = response.files[i].fileUrl;
             const url = new URL(fileUrl);
             const ipAddress = url.hostname;
 
             const isDir = url.pathname.endsWith('/');
-            addToDir(root, '', `${ipAddress}/${url.pathname}`, isDir);
+            root.addContent(`${ipAddress}/${url.pathname}`, isDir);
         }
 
-        return root;
+        return root.formatToJson();
     }
 }

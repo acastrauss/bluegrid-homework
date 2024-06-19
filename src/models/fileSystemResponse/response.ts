@@ -32,6 +32,7 @@ export function addToDir(dir: IDir, dirName: string, path: string, isDir: boolea
                     return false;
                 } );
                 if (existingSubDir) {
+                    // If subdir exists, it must have one key which is the name of that subdir
                     const subDirName = Object.keys(existingSubDir as IDir)[0];
                     return addToDir(existingSubDir as IDir, subDirName, path, isDir);
                 } else {
@@ -57,6 +58,7 @@ export function addToDir(dir: IDir, dirName: string, path: string, isDir: boolea
             for (let i = 0; i < dir[dirName].length; i++) {
                 const subDir = dir[dirName][i];
                 if(typeof(subDir) !== 'string'){
+                    // If subdir exists, it must have one key which is the name of that subdir
                     const subDirName = Object.keys(subDir as IDir)[0];
                     const nextPathPart = parts[1];
 
@@ -71,7 +73,6 @@ export function addToDir(dir: IDir, dirName: string, path: string, isDir: boolea
                         }
                     }
                 }
-                
             }
             // if not added in subdirs check if you should add new subdir
             if (!added) {

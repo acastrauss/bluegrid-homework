@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
+    "test-exec-time": "ts-node test/execution_time/testFormattingExecutionTime.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
