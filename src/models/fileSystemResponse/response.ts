@@ -11,44 +11,44 @@ export type Dir = IDir & {
 function createNewDir(name: string) {
     return {
         [name]: [],
-        name
-    } as Dir;
+    } as IDir;
 }
 
-export function addToDir(dir: Dir, path: string, isDir: boolean) : boolean{
+export function addToDir(dir: IDir, dirName: string, path: string, isDir: boolean) : boolean{
     const parts = path.split('/').filter((part) => part.length !== 0);
 
         if(parts.length === 1){
             // should be direct children of this dir
             if (isDir) {
-                dir[dir.name].push(createNewDir(parts[0]));
+                dir[dirName].push(createNewDir(parts[0]));
             } else {
-                dir[dir.name].push(parts[0]);
+                dir[dirName].push(parts[0]);
             }
             return true;
         }
         else if (parts.length === 2) {
-            if (parts[0] !== dir.name) {
+            if (parts[0] !== dirName) {
                 // should be in some of direct (1st children) subdirs
-                const existingSubDir = dir[dir.name].find((sd) => {
+                const existingSubDir = dir[dirName].find((sd) => {
                     if((typeof(sd) !== 'string')){
                         return parts[0] in sd;
                     }
                     return false;
                 } );
                 if (existingSubDir) {
-                    return addToDir(existingSubDir as Dir, path, isDir);
+                    const subDirName = Object.keys(existingSubDir as IDir)[0];
+                    return addToDir(existingSubDir as IDir, subDirName, path, isDir);
                 } else {
                     const newDir = createNewDir(parts[0]);
-                    dir[dir.name].push(newDir);
-                    return addToDir(newDir, parts.slice(1).join('/'), isDir);
+                    dir[dirName].push(newDir);
+                    return addToDir(newDir, parts[0], parts.slice(1).join('/'), isDir);
                 }
             } else {
                 // should be subdir/file in this instace
                 if (isDir) {
-                    dir[dir.name].push(createNewDir(parts[1]));
+                    dir[dirName].push(createNewDir(parts[1]));
                 } else {
-                    dir[dir.name].push(parts[1]);
+                    dir[dirName].push(parts[1]);
                 }
                 return true;
             }
@@ -58,10 +58,10 @@ export function addToDir(dir: Dir, path: string, isDir: boolean) : boolean{
             // grandchildren or more of root
             let added = false;
             
-            for (let i = 0; i < dir[dir.name].length; i++) {
-                const subDir = dir[dir.name][i];
+            for (let i = 0; i < dir[dirName].length; i++) {
+                const subDir = dir[dirName][i];
                 if(typeof(subDir) !== 'string'){
-                    const subDirName = (subDir as Dir).name;
+                    const subDirName = Object.keys(subDir as IDir)[0];
                     const nextPathPart = parts[1];
 
                     // if current dir contains a subdirectory which is next part of path
@@ -69,7 +69,7 @@ export function addToDir(dir: Dir, path: string, isDir: boolean) : boolean{
                         return typeof(sdc) !== 'string' && nextPathPart in (sdc as IDir);
                     });
                     if(inThisSubdir){
-                        added = addToDir(subDir as Dir, parts.slice(1).join('/'), isDir);
+                        added = addToDir(subDir as Dir, subDirName, parts.slice(1).join('/'), isDir);
                         if (added) {
                             break;
                         }

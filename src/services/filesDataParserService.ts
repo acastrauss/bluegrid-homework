@@ -13,7 +13,7 @@ export class FilesDataParserService {
             const ipAddress = url.hostname;
 
             const isDir = url.pathname.endsWith('/');
-            addToDir(root, `${ipAddress}/${url.pathname}`, isDir);
+            addToDir(root, '', `${ipAddress}/${url.pathname}`, isDir);
         }
 
         return root;
