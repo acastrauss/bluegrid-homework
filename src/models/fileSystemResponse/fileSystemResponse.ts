@@ -50,9 +50,11 @@ export class Directory {
             // grandchildren or more of root
             let added = false;
             for (let i = 0; i < this.subdirs.length; i++) {
-                added = this.subdirs[i].addContent(parts.slice(1).join('/'), isDir);
-                if (added) {
-                    break;
+                if(this.subdirs[i].name === parts[0]){
+                    added = this.subdirs[i].addContent(parts.slice(1).join('/'), isDir);
+                    if (added) {
+                        break;
+                    }
                 }
             }
             // if not added in subdirs check if you should add more subdirs
