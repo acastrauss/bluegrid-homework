@@ -1,17 +1,21 @@
-import axios from 'axios';
-import config from 'config';
 import { Request, Response } from 'express';
-import { FilesApiResponse } from '../models/filesApiResponse';
+import { ExternalFilesApiService } from '../services/externalFilesApiService';
 
-const FILES_API: string = config.get("FILES_API");
 
-export async function getFiles(req: Request, res: Response){
-    try {
-        const resApi = await axios.get(FILES_API);
-        const parsedResponse = resApi.data as FilesApiResponse;
-        res.send(parsedResponse);        
-    } catch (error) {
-        res.status(400);
-        res.send("Failed to get data from an API");
+export class FilesController {
+    private externalApiService: ExternalFilesApiService;
+
+    constructor(externalApiService: ExternalFilesApiService) {
+        this.externalApiService = externalApiService;
+    }
+
+    public async getFiles(req: Request, res: Response) {
+        const apiRes = await this.externalApiService.getFiles();
+        if (apiRes) {
+            res.send(apiRes);
+        } else {
+            res.status(400);
+            res.send('Failed to get data from API.');
+        }
     }
 }
