@@ -1,11 +1,11 @@
 import { FilesApiResponse } from "../models/externalFilesApi/filesApiResponse";
 import { Directory } from "../models/fileSystemResponse/fileSystemResponse";
-import { Dir, DirContent, IDir, addToDir } from './../models/fileSystemResponse/response';
+import { DirContent, IDir, addToDir } from './../models/fileSystemResponse/response';
 
 export class FilesDataParserService {
 
     async parseFilesApiResponse(response: FilesApiResponse) {
-        const root = {name : ''} as Dir;
+        const root = {} as IDir;
         root[''] = [];
         for (let i = 0; i < response.files.length; i++) {
             const fileUrl = response.files[i].fileUrl;

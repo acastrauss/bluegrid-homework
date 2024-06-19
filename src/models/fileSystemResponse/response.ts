@@ -4,10 +4,6 @@ export interface IDir {
     [name:string] : DirContent[];
 }
 
-export type Dir = IDir & {
-    name: string;
-}
-
 function createNewDir(name: string) {
     return {
         [name]: [],
@@ -69,7 +65,7 @@ export function addToDir(dir: IDir, dirName: string, path: string, isDir: boolea
                         return typeof(sdc) !== 'string' && nextPathPart in (sdc as IDir);
                     });
                     if(inThisSubdir){
-                        added = addToDir(subDir as Dir, subDirName, parts.slice(1).join('/'), isDir);
+                        added = addToDir(subDir as IDir, subDirName, parts.slice(1).join('/'), isDir);
                         if (added) {
                             break;
                         }
