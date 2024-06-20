@@ -65,7 +65,9 @@ Disadvantages:
 
 ## Second solution:
 
-This idea (located at `src/models/IDir.ts`) mimics the first one, but tries to remove formatting and code bloat. The improvement is centered around [index signature](https://www.typescriptlang.org/docs/handbook/interfaces.html) in Typescript. Which allows the tree structure to be created as it is in required JSON format with 'variable' property names.
+Code located at `src/models/IDir.ts`
+
+This idea mimics the first one, but tries to remove formatting and code bloat. The improvement is centered around [index signature](https://www.typescriptlang.org/docs/handbook/interfaces.html) in Typescript. Which allows the tree structure to be created as it is in required JSON format with 'variable' property names.
 
 The change is in using interface named `IDir` which contains index signatures as keys and value is array of `DirContent = string | IDir`.
 Since the class is not more in use separate method is called and it was required to transfer instance with each recursive call.
@@ -77,7 +79,9 @@ Disadvantages:
 
 ## Third (final) solution:
 
-The idea (located at `src/models/radix.ts`) expands from the first two as it introduces [Radix tree](https://en.wikipedia.org/wiki/Radix_tree) which is often used in IP routing (for IP Addresses) and is made for storing large amount of string values (storage optimized, but indirectly that does optimize execution time which was significant requirement) thus making it good candidate for this specific purpose. 
+Code located at `src/models/radix.ts`
+
+The idea expands from the first two as it introduces [Radix tree](https://en.wikipedia.org/wiki/Radix_tree) which is often used in IP routing (for IP Addresses) and is made for storing large amount of string values (storage optimized, but indirectly that does optimize execution time which was significant requirement) thus making it good candidate for this specific purpose. 
 
 Each operation has `O(k)` where `k` is max-depth of tree. Thus if any operation (insert, search, update, delete) is done on Radix tree only `k` steps are required to do so. For this concrete example `k = largest number of parts in one url out of all urls`, which is not a big number.
 
