@@ -1,7 +1,5 @@
 import { FilesApiResponse } from "../models/externalFilesApi/filesApiResponse";
 import { NodeType, RadixNode } from "../models/fileSystemResponse/radix";
-import { Directory } from "../models/fileSystemResponse/fileSystemResponse";
-import { DirContent, IDir, addToDir } from './../models/fileSystemResponse/response';
 
 export class FilesDataParserService {
 
