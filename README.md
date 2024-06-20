@@ -47,8 +47,53 @@ The idea is to create n-ary tree with a class named `Directory` that will act as
 
 Each node contains:
 
-    1. string list, that resembles files in the given directory
+    1. string list, that resembles files in the given directory, named: `files`
 
-    2. recursive list of `Directory` instances which resembles the idea behind subdirectories
+    2. recursive list of `Directory` instances which resembles the idea behind subdirectories, named: `subdirs`
+
+For each given url string algorithm decomposes it in parts and traverses the tree recursively (starting from root) until it finds the place to insert new url (new dir/file). Note to keep in mind is that algorithm will add new subdirectories along the way if the url is constructed for that, e.g.:
+If url is: `dir/subdir/app.exe` and in tree there already is a child of root named `dir`, the algorithm will create `subdir` (will be child of `dir`) and then add new child file to `subdir` named `app.exe`;
+Depending if it is a directory or file (if url ends with '/' or not) the new url path (actually concrete ending part of that path) will either be inserted in `subidrs` or `files`.
+
+After all urls have been inserted, the class needs to be formatted so it resembles given JSON format. Method for that is `formatToJson` and it work recursively.
+
+Disadvantages:
+    
+    1. Requires recursive formatting at the end
+    2. Uses list instead of more optimal structure such as Map
+    3. Does have unrefactored code bloat 
+
+## Second solution:
+
+This idea (located at `src/models/IDir.ts`) mimics the first one, but tries to remove formatting and code bloat. The improvement is centered around [index signature](https://www.typescriptlang.org/docs/handbook/interfaces.html) in Typescript. Which allows the tree structure to be created as it is in required JSON format with 'variable' property names.
+
+The change is in using interface named `IDir` which contains index signatures as keys and value is array of `DirContent = string | IDir`.
+Since the class is not more in use separate method is called and it was required to transfer instance with each recursive call.
+
+Disadvantages:
+    
+    1. Code bloat was still present
+    2. Unoptimal usage of recursion (more parameters in each call than previous method)
+
+## Third (final) solution:
+
+The idea (located at `src/models/radix.ts`) expands from the first two as it introduces [Radix tree](https://en.wikipedia.org/wiki/Radix_tree) which is often used in IP routing (for IP Addresses) and is made for storing large amount of string values (storage optimized, but indirectly that does optimize execution time which was significant requirement) thus making it good candidate for this specific purpose. 
+
+Each operation has `O(k)` where `k` is max-depth of tree. Thus if any operation (insert, search, update, delete) is done on Radix tree only `k` steps are required to do so. For this concrete example `k = largest number of parts in one url out of all urls`, which is not a big number.
+
+The `RadixNode` class again resembles recursive tree structure, except that it utilizes Map (instead of list) which is far more optimal for this purpose as it enables faster querying of the children nodes based on the string that represents them. Each key is the part of url, value is concrete node that has recursive children nodes themselves. 
+
+Each path (from root to leaf) represents unique file system path to either file or directory. This mimics how Linux organization works since everything is viewed as a file (even directories, external devices, etc.) but depending on the purpose they are used in different ways. For that reason `NodeType` enum is available to flag concrete type of 'file'.
+
+Algorithm, similarly (but with far less code bloat, better structure), traverses from root to find a suitable parent to for the given url. This is done in `k` steps. Along the way url parts are stripped (the part that is stripped is ecountered node's name) and from the remaining parts new nodes are created, creating new subtree structure. Significant optimization that was available here is to automatically have suitable parent for all nodes that should be added except the first one. For the first one we need to traverse the tree.
+
+# Testing possible solutions:
+
+All three possible solutions were tested with the same dataset (the one acquired from API) over 100 iterations each. Radix tree approach showed significantly better performances and thus was chosen as final solution.
+
+To test times of execution for each method simply run: `npm run test-exec-time`
+
+Test code is located at `test/execution_time/testFormattingExecutionTime.ts`
+
 
 
