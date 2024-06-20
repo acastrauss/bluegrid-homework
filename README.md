@@ -103,7 +103,7 @@ Test code is located at `test/execution_time/testFormattingExecutionTime.ts`
 
 # Possible improvements:
 
-    1. Unit tests - standard practice for any API, currently not in requirements could easily be introduced. Possibly with [Jest](https://jestjs.io/docs/getting-started)
+    1. Unit tests - standard practice for any API, currently not in requirements could easily be introduced. Possibly with Jest
     2. More complex tree structure like Merkle-Patricia Trie
     3. Transfering the data to client while it is still formatting with utilization of pipelines. Resembling stream of data.
 
